@@ -6,40 +6,43 @@
 	<title>ToDo</title>
 	<style></style>
 	<script>
-		function get_text(){
-			let message = document.getElementById('task_imput_text').value;
-			alert(message);
-		}
-		function get_priority(){
-			let button_priority = document.getElementsByName('priority').value;
-			alert(button_priority);
-		}
-
+		// function(){
+		// 	let today = new Date();
+		// 	today.setDate(today.getDate());
+		// 	let yyyy = today.getFullYear();
+		// 	let mm = ("0"+(today.getMonth()+1).slice(-2));
+		// 	let dd = ("0"+(today.getDate()).slice(-2));
+		// }
+		// 配列を作って、そこにタスク内容と優先度と日時を格納する。　ちゃんと入ってるか確認するために、一時的に出力する。
+ 		function make_new_array(){
+ 			let text = document.getElementById('task_imput_text').value;
+ 			let pri = 'high';
+ 			let date = document.getElementsByClassName('task_input_date').valueAsDate;
+ 			const array = [text,pri,date];
+ 			alert(array);
+ 		}
 	</script>
 </head>
 <body>
 	<main>
 		<h1>ToDo</h1>
 		<form action="#" id="form">
-			<input id="task_imput_text" type="text" required placeholder="タスクを入力してくだい" size="100" />
-			<fieldset class="task_input_priority"><!-- 優先度 -->
+			<!-- タスク内容：テキストタイプ -->
+			<input id="task_imput_text" type="text" required placeholder="タスクを入力してくだい" size="200" />
+
+			<fieldset class="task_input_priority" name="priority"><!-- 優先度:ラジオタイプでやる -->
 				<legend>優先度</legend>
-				<input id="task_input_priority_high" name="priority" type="radio" value="high" checked />
-				<label for="high">高い</label>
-
-				<input id="task_input_priority_normal" name="priority" type="radio" value="normal" />
-				<label	for="normal">普通</label>
-
-				<input id="task_input_priority_low" name="priority" type="radio" value="low" />
-				<label for="low">低い</label>
-
+				<input id="task_input_priority_high" name="priority" type="radio" value="high" checked />高い
+				<input id="task_input_priority_normal" name="priority"  type="radio" value="normal" />普通
+				<input id="task_input_priority_low" name="priority"  type="radio" value="low" />低い
 			</fieldset>
 
-			<fieldset><!-- 期限 -->
+			<fieldset><!-- 期限：デイトタイプ　-->
 				<legend>期限</legend>
 				<input class="task_input_date" type="date" />
 			</fieldset>
-			<input class="task_button" type="button"  onclick="get_text()" />
+
+			<input class="task_button" type="submit" value="追加" onclick="make_new_array()" />
 		</form>
 		<p id="output" ></p>
 	</main>
