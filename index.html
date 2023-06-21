@@ -4,7 +4,29 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>ToDo</title>
-	<style></style>
+	<style>
+		body {
+			background: dimgray;
+		}
+
+		.task_output_post_high{
+			background: indianred;
+		}
+		.task_output_post_normal{
+			background:skyblue;
+		}
+		.task_output_post_low{
+			background: lightgreen;
+		}
+		.task_output_post_name{
+			font-size: 30px;
+		}
+
+		.float{
+			float:left;
+			margin: 10px;
+		}
+	</style>
 	<script>
 		// function(){
 		// 	let today = new Date();
@@ -15,11 +37,127 @@
 		// }
 		// 配列を作って、そこにタスク内容と優先度と日時を格納する。　ちゃんと入ってるか確認するために、一時的に出力する。
  		function make_new_array(){
- 			let text = document.getElementById('task_imput_text').value;
- 			let pri = 'high';
- 			let date = document.getElementsByClassName('task_input_date').valueAsDate;
- 			const array = [text,pri,date];
- 			alert(array);
+ 			const name = document.getElementById('task_imput_name').value;
+
+ 			const text = document.getElementById('task_input_text').value;
+ 			console.log("text:"+text);//デバック用
+
+ 			// ラジオボタンのうちチェックされたものだけを得る
+ 			// .item() , .checked　が必要らしい　pri=の.valueはhighとかlowとか入れたやつが返される。　for()の中のiは初期値1にしたらちゃんと動いた
+ 			const checkValue =document.getElementsByName('priority');
+ 			let pri = ' ';
+ 			for(let i=1;i<4;i++){
+ 				if(checkValue.item(i).checked){
+ 					pri = checkValue.item(i).value;
+ 				}
+ 			}
+
+ 			// 優先度を日本語に変換する関数を生成　お手本.js l:419からのパクリ(switch文をif文で置き換えた)
+ 			const get_pri_jp = (priority) => {
+        		let str = '';
+        		if(priority == 'high'){
+        			str = '高い';
+        		}else if (priority == 'normal'){
+        			str = '普通';
+        		}else if (priority == 'low'){
+        			str = '低い';
+        		}
+        		return str;
+    		};
+    		pri = get_pri_jp(pri);
+ 			const array = [name,text,pri];
+ 			console.log("array:"+array);
+
+ 			// <div></div>内に新しくhtmlを記述する方法　保存したタスクを表示する用
+ 			let html = document.getElementById("output");
+ 			let doc_high=`
+ 				<div class="task_output_post_high">
+ 					<div class="task_output_post_high_name">
+ 						タスク名：${name}
+ 					</div>
+ 					<div class="task_output_post_high_text">
+ 						タスクの内容：${text}
+ 					</div>
+ 					<div class="task_output_post_high_priority">
+ 						優先度：${pri}
+ 					</div>
+ 					<div class="task_output_post_high_delete" >
+ 						<input class="task_output_post_high_delte_submit" type="submit" onclick="delete_task()" value="削除"/>
+ 					</div>
+ 				</div>
+ 			` ;
+
+ 			let doc_normal = `
+ 				<div class="task_output_post_normal">
+ 					<div class="task_output_post_normal_name">
+ 						タスク名：${name}
+ 					</div>
+ 					<div class="task_output_post_normal_text">
+ 						タスクの内容：${text}
+ 					</div>
+ 					<div class="task_output_post_normal_priority">
+ 						優先度：${pri}
+ 					</div>
+ 					<div class="task_output_post_normal_delete" >
+ 						<input class="task_output_post_normal_delte_submit" type="submit" onclick="delete_task()" value="削除"/>
+ 					</div>
+ 				</div>
+ 			`;
+
+ 			let doc_low = `
+ 				<div class="task_output_post_low">
+ 					<div class="task_output_post_low_name">
+ 						タスク名：${name}
+ 					</div>
+ 					<div class="task_output_post_low_text">
+ 						タスクの内容：${text}
+ 					</div>
+ 					<div class="task_output_post_low_priority">
+ 						優先度：${pri}
+ 					</div>
+ 					<div class="task_output_post_low_delete" >
+ 						<input class="task_output_post_low_delte_submit" type="submit" onclick="delete_task()" value="削除"/>
+ 					</div>
+ 				</div>
+ 			`;
+ 			const html_post = (h) =>{
+ 				if(pri == "高い"){
+ 					h += doc_high;
+ 				}else if (pri == "普通"){
+ 					h += doc_normal;
+ 				}else if (pri == "低い"){
+ 					h += doc_low;
+ 				}
+ 				return h;
+ 			};
+ 			html.innerHTML += html_post(html);
+
+ 			// 削除用関数　（未完成===詰み）
+ 			const delete_task = () => {
+ 				if (document.getElementsByClassName("task_output_post_delete_submit").checked == true){
+ 					console.log('デバック1');
+ 					document.querySelector('.task_output_post').remove();	
+ 				}
+ 				console.log('デバック2');
+ 			};
+
+
+ 			// let doc1 = document.getElementById("output_aritcle");
+ 			// doc1.innerHTML = '<div><p>（テスト）入力した内容：['+ array+ ']</p></div>';
+
+ 			// 今日の日付を得る用
+ 			let today = new Date();
+ 			today.setDate(today.getDate());
+ 			const today_year = today.getFullYear();
+ 			const today_month = today.getMonth()+1;
+ 			const today_day = today.getDate();
+ 			const today_date = today_year+today_month+today_day;
+
+ 			// ユーザーエージェント（どの機種、どのアプリから開いているか）判別：後でやる（優先度低い）
+ 			
+
+ 			// ブラウザ保存
+ 			//localStorage.setItem(key, value);
  		}
 	</script>
 </head>
@@ -28,23 +166,31 @@
 		<h1>ToDo</h1>
 		<form action="#" id="form">
 			<!-- タスク内容：テキストタイプ -->
-			<input id="task_imput_text" type="text" required placeholder="タスクを入力してくだい" size="200" />
+			<input id="task_imput_name" type="text" required placeholder="タスク名を入力してくだい" size="200" />
 
-			<fieldset class="task_input_priority" name="priority"><!-- 優先度:ラジオタイプでやる -->
+			<textarea id="task_input_text" cols="130" rows="5" placeholder="タスクを入力してください"></textarea>
+
+			<fieldset class="task_input_priority" ><!-- 優先度:ラジオタイプでやる -->
+				<div id="task_input_priority" class="float" name="priority">
 				<legend>優先度</legend>
-				<input id="task_input_priority_high" name="priority" type="radio" value="high" checked />高い
-				<input id="task_input_priority_normal" name="priority"  type="radio" value="normal" />普通
-				<input id="task_input_priority_low" name="priority"  type="radio" value="low" />低い
-			</fieldset>
-
-			<fieldset><!-- 期限：デイトタイプ　-->
+				<input id="task_input_priority_high" class="task_input_priority" name="priority" type="radio" value="high" checked />高い
+				<input id="task_input_priority_normal" class="task_input_priority" name="priority"  type="radio" value="normal" />普通
+				<input id="task_input_priority_low" class="task_input_priority" name="priority"  type="radio" value="low" />低い
+				</div>
+				<!-- 期限：デイトタイプ　-->
+				<div id="task_input_limit" class="float">
 				<legend>期限</legend>
-				<input class="task_input_date" type="date" />
+				<input class="task_input_date" type="date" value="2023-06-20" />
+				</div>
 			</fieldset>
 
-			<input class="task_button" type="submit" value="追加" onclick="make_new_array()" />
+			<input id="task_button" type="submit" value="追加" onclick="make_new_array()" />
 		</form>
-		<p id="output" ></p>
+		<div id="output" >
+			<div id="output_aritcle">
+				
+			</div>
+		</div>
 	</main>
 </body>
 </html>
