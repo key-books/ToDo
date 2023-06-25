@@ -21,20 +21,31 @@
 		.task_output_post_name{
 			font-size: 30px;
 		}
-
+		/*優先順位のラジオと期日を横並びで表示する*/
 		.float{
 			float:left;
 			margin: 10px;
 		}
+
+		.sort_float{
+			float:left;
+			margin:10px;
+			border: solid 1px black;
+		}
 	</style>
 	<script>
-		// function(){
-		// 	let today = new Date();
-		// 	today.setDate(today.getDate());
-		// 	let yyyy = today.getFullYear();
-		// 	let mm = ("0"+(today.getMonth()+1).slice(-2));
-		// 	let dd = ("0"+(today.getDate()).slice(-2));
-		// }
+		// チェックボックスの値がtrueの数を求めるときに必要な変数を定義 初期値0
+		let count_checked_true = 0;
+
+		// https://tenshoku-miti.com/takepon/javascript-add-default-date/　（21/06/2023　にパクった）
+  		window.onload = function () {
+    		let today = new Date();
+    		today.setDate(today.getDate());
+    		let yyyy = today.getFullYear();
+    		let mm = ("0" + (today.getMonth() + 1)).slice(-2);
+    		let dd = ("0" + today.getDate()).slice(-2);
+    		document.getElementById("today").value = yyyy + '-' + mm + '-' + dd;
+  		}
 		// 配列を作って、そこにタスク内容と優先度と日時を格納する。　ちゃんと入ってるか確認するために、一時的に出力する。
  		function make_new_array(){
  			const name = document.getElementById('task_imput_name').value;
@@ -69,58 +80,65 @@
  			console.log("array:"+array);
 
  			// <div></div>内に新しくhtmlを記述する方法　保存したタスクを表示する用
- 			let html = document.getElementById("output");
+ 			let doc = document.getElementById("output");
  			let doc_high=`
- 				<div class="task_output_post_high">
- 					<div class="task_output_post_high_name">
- 						タスク名：${name}
- 					</div>
- 					<div class="task_output_post_high_text">
- 						タスクの内容：${text}
- 					</div>
- 					<div class="task_output_post_high_priority">
- 						優先度：${pri}
- 					</div>
- 					<div class="task_output_post_high_delete" >
- 						<input class="task_output_post_high_delte_submit" type="submit" onclick="delete_task()" value="削除"/>
+ 				<div class="task_output_post[]">
+ 					<div class="task_output_post_high">
+ 						<div class="task_output_post_high_name">
+ 							タスク名：${name}
+ 						</div>
+ 						<div class="task_output_post_high_text">
+ 							タスクの内容：${text}
+ 						</div>
+ 						<div class="task_output_post_high_priority">
+ 							優先度：${pri}
+ 						</div>
+ 						<div class="task_output_post_button">
+ 							<input type="checkbox" name="delete_task_radio[]" onclick="1"/> タスク完了
+ 						</div>
  					</div>
  				</div>
  			` ;
 
  			let doc_normal = `
- 				<div class="task_output_post_normal">
- 					<div class="task_output_post_normal_name">
- 						タスク名：${name}
- 					</div>
- 					<div class="task_output_post_normal_text">
- 						タスクの内容：${text}
- 					</div>
- 					<div class="task_output_post_normal_priority">
- 						優先度：${pri}
- 					</div>
- 					<div class="task_output_post_normal_delete" >
- 						<input class="task_output_post_normal_delte_submit" type="submit" onclick="delete_task()" value="削除"/>
+ 				<div class="task_output_post[]">
+ 					<div class="task_output_post_normal">
+ 						<div class="task_output_post_normal_name">
+ 							タスク名：${name}
+ 						</div>
+ 						<div class="task_output_post_normal_text">
+ 							タスクの内容：${text}
+ 						</div>
+ 						<div class="task_output_post_normal_priority">
+ 							優先度：${pri}
+ 						</div>
+ 						<div class="task_output_post_button">
+ 							<input type="checkbox" name="delete_task_radio[]" value="1"/> タスク完了
+ 						</div
  					</div>
  				</div>
  			`;
 
  			let doc_low = `
- 				<div class="task_output_post_low">
- 					<div class="task_output_post_low_name">
- 						タスク名：${name}
- 					</div>
- 					<div class="task_output_post_low_text">
- 						タスクの内容：${text}
- 					</div>
- 					<div class="task_output_post_low_priority">
- 						優先度：${pri}
- 					</div>
- 					<div class="task_output_post_low_delete" >
- 						<input class="task_output_post_low_delte_submit" type="submit" onclick="delete_task()" value="削除"/>
+ 				<div class="task_output_post[]">
+ 					<div class="task_output_post_low">
+ 						<div class="task_output_post_low_name">
+ 							タスク名：${name}
+ 						</div>
+ 						<div class="task_output_post_low_text">
+ 							タスクの内容：${text}
+ 						</div>
+ 						<div class="task_output_post_low_priority">
+ 							優先度：${pri}
+ 						</div>
+ 						<div class="task_output_post_button">
+ 							<input type="checkbox" name="delete_task_radio[]" value="1"/> タスク完了
+ 						</div
  					</div>
  				</div>
  			`;
- 			const html_post = (h) =>{
+ 			// 入力したものを全部出力できるようにした(全部足す)
+ 			const normal_html_post = (h) =>{
  				if(pri == "高い"){
  					h += doc_high;
  				}else if (pri == "普通"){
@@ -130,28 +148,12 @@
  				}
  				return h;
  			};
- 			html.innerHTML += html_post(html);
-
- 			// 削除用関数　（未完成===詰み）
- 			const delete_task = () => {
- 				if (document.getElementsByClassName("task_output_post_delete_submit").checked == true){
- 					console.log('デバック1');
- 					document.querySelector('.task_output_post').remove();	
- 				}
- 				console.log('デバック2');
- 			};
-
+ 			let html = doc;
+ 			html.innerHTML += normal_html_post(html);
 
  			// let doc1 = document.getElementById("output_aritcle");
  			// doc1.innerHTML = '<div><p>（テスト）入力した内容：['+ array+ ']</p></div>';
 
- 			// 今日の日付を得る用
- 			let today = new Date();
- 			today.setDate(today.getDate());
- 			const today_year = today.getFullYear();
- 			const today_month = today.getMonth()+1;
- 			const today_day = today.getDate();
- 			const today_date = today_year+today_month+today_day;
 
  			// ユーザーエージェント（どの機種、どのアプリから開いているか）判別：後でやる（優先度低い）
  			
@@ -159,6 +161,37 @@
  			// ブラウザ保存
  			//localStorage.setItem(key, value);
  		}
+ 			// 削除用関数　（未完成===詰み）
+ 		const checkboxes = document.getElementsByClassName('task_output_post[]');
+ 		const delete_task = ()=>{
+ 			console.log('デバック用（削除関数）：開始');
+ 			let delete_task_array = document.getElementsByName('delete_task_radio[]');
+ 			let checked_true = document.getElementsByName('delete_task_radio[]').checked;
+
+ 			// チェックボックスがtrueの数を求める
+ 			for(let i=0;i<delete_task_array.length;i++){
+ 				if(delete_task_array[i].checked == true){
+ 					count_checked_true += 1;
+ 				}
+ 			}
+ 			console.log('デバック用：count_checked_true='+count_checked_true);
+
+ 			for(let i=0;i<delete_task_array.length;i++){
+ 				console.log('デバック用：forループ'+i+'回目');
+ 				console.log(i+'個目のチェックボックスの値='+delete_task_array[i].checked);
+ 				for(let j=0;j<delete_task_array.length;j++){
+ 					if(delete_task_array[j].checked == true){
+ 					 	checkboxes[j].remove();
+ 					}
+ 				}			
+  			}
+ 			console.log('デバック用（削除関数）：終了');
+ 		};
+
+ 		// 優先度順並び替え
+ 		const fun_sort_priority = () =>{
+ 			console.log('デバック用：優先度順並び替え');
+ 		};
 	</script>
 </head>
 <body>
@@ -166,9 +199,9 @@
 		<h1>ToDo</h1>
 		<form action="#" id="form">
 			<!-- タスク内容：テキストタイプ -->
-			<input id="task_imput_name" type="text" required placeholder="タスク名を入力してくだい" size="200" />
+			<input id="task_imput_name" type="text" required placeholder="タスク名を入力してくだい" size="140" />
 
-			<textarea id="task_input_text" cols="130" rows="5" placeholder="タスクを入力してください"></textarea>
+			<textarea id="task_input_text" cols="140" rows="5" placeholder="タスクを入力してください"></textarea>
 
 			<fieldset class="task_input_priority" ><!-- 優先度:ラジオタイプでやる -->
 				<div id="task_input_priority" class="float" name="priority">
@@ -180,11 +213,13 @@
 				<!-- 期限：デイトタイプ　-->
 				<div id="task_input_limit" class="float">
 				<legend>期限</legend>
-				<input class="task_input_date" type="date" value="2023-06-20" />
+				<input class="task_input_date" type="date" id="today" />
 				</div>
 			</fieldset>
 
 			<input id="task_button" type="submit" value="追加" onclick="make_new_array()" />
+			<input id="sort_priority" type="submit" value="優先度順" onclick="fun_sort_priority()" />
+ 			<input class="task_output_post_normal_delte_submit" type="submit" onclick="delete_task()" value="削除"/>
 		</form>
 		<div id="output" >
 			<div id="output_aritcle">
