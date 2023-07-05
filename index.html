@@ -61,9 +61,10 @@
 			<input id="task_button" type="submit" value="追加" onclick="make_new_array()" />
 			<input id="sort_priority" type="submit" value="優先度順" onclick="fun_sort_priority()" />
  			<input class="task_output_post_normal_delte_submit" type="submit" onclick="delete_task()" value="削除"/>
+ 			<!-- <input type="submit" onclick="stack_delete()" value="スタック削除"> スタックの配列削除用-->
 		</form>
-		<div id="output" >
-			<div id="output_aritcle">
+		 <div id="output" >
+		 	<div id="output_aritcle">
 				
 			</div>
 		</div>
@@ -75,8 +76,19 @@
 		let stack_array = [];
 		let strage = localStorage;
 
+		// スタックの配列削除用
+		// const stack_delete = () =>{
+		// 	console.log('デバック用：スタック全削除');
+		// 	for(let i =0;i<stack_array.length;i++){
+		// 		stack_array.shift();
+		// 		console.log(stack_array);
+		// 	}
+		// 	save_array(stack_array);
+		// 	console.log('デバック用：完成');
+		// };
+
 		// dateの初期値を常に今日にする方法 https://tenshoku-miti.com/takepon/javascript-add-default-date/　（21/06/2023　にパクった）
-  		window.onload = function () {
+  		window.onload = function () {　//開いた瞬間にやるもの
     		let today = new Date();
     		today.setDate(today.getDate());
     		let yyyy = today.getFullYear();
@@ -96,11 +108,13 @@
   				console.log(stack_array);
   			}
   			
-
-  			for (let i=1;i<array.length;i=i*6){
-  				let doc = document.getElementById("output");
+  			// 保存されているものを出力する。 
+  			let doc = document.getElementById("output");
+  			let doc_html; let doc_high; let doc_normal; let doc_low;
+  			console.log(stack_array.length);
+  			for (let i=1;i<stack_array.length;i=i+6){
   				if(array[i+1] == "高い"){
-  					let doc_high=`
+  					doc_high=`
  						<div class="task_output_post[]">
  							<div class="task_output_post_high">
  								<div class="task_output_post_high_name">
@@ -121,10 +135,9 @@
  							</div>
  						</div>
  					` ;
- 					doc.innerHTML = doc_high;
-
+ 					doc_normal = ''; doc_low = '';
   				}else if(array[i+1] == "普通"){
-  					let doc_normal=`
+  					doc_normal=`
  						<div class="task_output_post[]">
  							<div class="task_output_post_normal">
  								<div class="task_output_post_normal_name">
@@ -145,9 +158,9 @@
  							</div>
  						</div>
  					` ;
- 					doc.innerHTML = doc_normal;
+ 					doc_high = ''; doc_low ='';
   				}else if(array[i+1] == "低い"){
-  					let doc_low=`
+  					doc_low=`
  						<div class="task_output_post[]">
  							<div class="task_output_post_low">
  								<div class="task_output_post_low_name">
@@ -168,9 +181,11 @@
  							</div>
  						</div>
  					` ;
- 					doc.innerHTML = doc_low;
+ 					doc_high = ''; doc_normal = ''; 
   				}
-  			}
+  				doc_html += doc_high + doc_normal + doc_low;
+  			}//forループ終了
+  			doc.innerHTML = doc_html;
   		}
   		
   		const save_array = (arr)=>{			
@@ -308,7 +323,7 @@
 
  			// ユーザーエージェント（どの機種、どのアプリから開いているか）判別：後でやる（優先度低い）
 
- 			// 保存関数
+ 			// 保存したものに入力したものをスタックにプッシュしていく
  			for(let i=0;i<array.length /6;i++){
  				stack_array.push(name);
  				stack_array.push(text);
@@ -322,11 +337,13 @@
  			
 
 
- 		}
+ 		}//make_array終了
+
  			// 削除用関数
  		const checkboxes = document.getElementsByClassName('task_output_post[]');
  		const delete_task = ()=>{
  			console.log('デバック用（削除関数）：開始');
+ 			// console.log('デバック用：stack_array：'+stack_array);
  			let delete_task_array = document.getElementsByName('delete_task_radio[]');
  			let checked_true = document.getElementsByName('delete_task_radio[]').checked;
 
@@ -336,20 +353,35 @@
  				if(delete_task_array[i].checked == true){
  					count_checked_true += 1;
  				}
+
  			}
  			console.log('デバック用：count_checked_true='+count_checked_true);
-
+ 			// console.log('デバック用：stack_array：'+stack_array);
+ 			for(let i =0; i<delete_task_array.length;i++){
+ 				if (delete_task_array[i].checked == true){
+ 					for(let i=0;i<6;i++){
+ 						stack_array.shift();
+ 					}	
+ 				}
+ 				console.log('デバック用：stack_array：'+stack_array);
+ 			}
+ 			console.log(stack_array);
  			for(let i=0;i<delete_task_array.length;i++){
  				console.log('デバック用：forループ'+i+'回目');
  				for(let j=0;j<delete_task_array.length;j++){
  					console.log(i+'個目のチェックボックスの値='+delete_task_array[i].checked);
  					if(delete_task_array[j].checked == true){
  					 	checkboxes[j].remove();
+ 					 	// console.log('デバック用：stack_array：'+stack_array);
  					}
- 				}			
+ 					// console.log('デバック用：stack_array：'+stack_array);
+ 				}
+ 				// console.log('デバック用：stack_array：'+stack_array);
   			}
  			console.log('デバック用（削除関数）：終了');
- 		};
+ 			// console.log('デバック用：stack_array：'+stack_array);
+ 			save_array(stack_array);
+ 		}; //delete_task 終了
 
  		// 優先度順並び替え
  		const fun_sort_priority = () =>{
