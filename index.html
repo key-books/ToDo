@@ -76,7 +76,7 @@
 		let stack_array = [];
 		let strage = localStorage;
 
-		// スタックの配列削除用
+		// スタックの配列削除用 今はもういらない 記録用
 		// const stack_delete = () =>{
 		// 	console.log('デバック用：スタック全削除');
 		// 	for(let i =0;i<stack_array.length;i++){
@@ -334,10 +334,7 @@
 				save_array(stack_array);
 				console.log("保存："+stack_array);
  			}
- 			
-
-
- 		}//make_array終了
+ 		}//make_new_array終了
 
  			// 削除用関数
  		const checkboxes = document.getElementsByClassName('task_output_post[]');
@@ -386,7 +383,132 @@
  		// 優先度順並び替え
  		const fun_sort_priority = () =>{
  			console.log('デバック用：優先度順並び替え');
- 		};
+ 			console.log(stack_array);
+ 			let sort_array = [];
+ 			let sort_high_array =[];
+ 			let sort_normal_array =[];
+ 			let sort_low_array =[];
+ 			for(let i=2;i<stack_array.length;i+=6){
+ 				console.log('for スタート');
+ 				console.log(stack_array[i]);
+ 				if(stack_array[i] == '高い'){
+ 					for(let j=-2;j<4;j++){
+ 						sort_array.push(stack_array[i+j]);
+ 					}
+ 				}
+ 			}
+ 			for(let i=2;i<stack_array.length;i+=6){
+ 				console.log('for スタート');
+ 				console.log(stack_array[i]);
+ 				if(stack_array[i] == '普通'){
+ 					for(let j=-2;j<4;j++){
+ 						sort_array.push(stack_array[i+j]);
+  					}
+ 				}
+ 			}
+ 			for(let i=2;i<stack_array.length;i+=6){
+ 				console.log('for スタート');
+ 				console.log(stack_array[i]);
+ 				if(stack_array[i] == '低い'){
+ 					for(let j=-2;j<4;j++){
+ 						sort_array.push(stack_array[i+j]);
+ 					}
+ 				}
+ 			}
+				
+ 			console.log('デバック用（sort_array）');
+ 			console.log(sort_array);
+ 			// sort_array.push(sort_high_array);
+ 			// console.log('デバック用（sort_array）');
+ 			// console.log(sort_array);
+
+ 			// sort_array.push(sort_normal_array);
+ 			// console.log('デバック用（sort_array）');
+ 			// console.log(sort_array);
+
+ 			// sort_array.push(sort_low_array);
+ 			// console.log('デバック用（sort_array）');
+ 			// console.log(sort_array);
+
+ 			let doc = document.getElementById("output");
+ 			let doc_html; let doc_high; let doc_normal; let doc_low;
+ 			console.log(sort_array.length);
+  			for (let i=0;i<sort_array.length;i+=6){
+  				if(sort_array[i+2] == "高い"){
+  					doc_high=`
+ 						<div class="task_output_post[]">
+ 							<div class="task_output_post_high">
+ 								<div class="task_output_post_high_name">
+ 									タスク名：${sort_array[i]}
+ 								</div>
+ 								<div class="task_output_post_high_text">
+ 									タスクの内容：${sort_array[i+1]}
+ 								</div>
+ 								<div class="task_output_post_high_priority">
+ 									優先度：${sort_array[i+2]}
+ 								</div>
+ 								<div class="task_output_post_high_limit">
+ 									期日：${sort_array[i+3]}年${sort_array[i+4]}月${sort_array[i+5]}日
+ 								</div>
+ 								<div class="task_output_post_button">
+ 									<input type="checkbox" name="delete_task_radio[]" onclick="1"/> タスク完了
+ 								</div>
+ 							</div>
+ 						</div>
+ 					` ;
+ 					doc_normal = ''; doc_low = '';
+  				}else if(sort_array[i+2] == "普通"){
+  					doc_normal=`
+ 						<div class="task_output_post[]">
+ 							<div class="task_output_post_normal">
+ 								<div class="task_output_post_normal_name">
+ 									タスク名：${sort_array[i]}
+ 								</div>
+ 								<div class="task_output_post_normal_text">
+ 									タスクの内容：${sort_array[i+1]}
+ 								</div>
+ 								<div class="task_output_post_normal_priority">
+ 									優先度：${sort_array[i+2]}
+ 								</div>
+ 								<div class="task_output_post_normal_limit">
+ 									期日：${sort_array[i+3]}年${sort_array[i+4]}月${sort_array[i+5]}日
+ 								</div>
+ 								<div class="task_output_post_button">
+ 									<input type="checkbox" name="delete_task_radio[]" onclick="1"/> タスク完了
+ 								</div>
+ 							</div>
+ 						</div>
+ 					` ;
+ 					doc_high = ''; doc_low ='';
+  				}else if(sort_array[i+2] == "低い"){
+  					doc_low=`
+ 						<div class="task_output_post[]">
+ 							<div class="task_output_post_low">
+ 								<div class="task_output_post_low_name">
+ 									タスク名：${sort_array[i]}
+ 								</div>
+ 								<div class="task_output_post_low_text">
+ 									タスクの内容：${sort_array[i+1]}
+ 								</div>
+ 								<div class="task_output_post_low_priority">
+ 									優先度：${sort_array[i+2]}
+ 								</div>
+ 								<div class="task_output_post_low_limit">
+ 									期日：${sort_array[i+3]}年${sort_array[i+4]}月${sort_array[i+5]}日
+ 								</div>
+ 								<div class="task_output_post_button">
+ 									<input type="checkbox" name="delete_task_radio[]" onclick="1"/> タスク完了
+ 								</div>
+ 							</div>
+ 						</div>
+ 					` ;
+ 					doc_high = ''; doc_normal = ''; 
+  				}
+  				doc_html += doc_high + doc_normal + doc_low;
+  			doc.innerHTML = doc_html;
+ 			}
+ 			save_array(sort_array);
+ 		}; //ソート関数終了
 	</script>
 </body>
 </html>
