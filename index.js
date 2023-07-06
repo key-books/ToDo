@@ -284,9 +284,7 @@ const delete_task = ()=>{
 	// console.log('デバック用：stack_array：'+stack_array);
 	for(let i =0; i<delete_task_array.length;i++){
 		if (delete_task_array[i].checked == true){
-			for(let i=0;i<6;i++){
-				stack_array.shift();
-			}	
+			stack_array.splice(i);	
 		}
 		// console.log('デバック用：stack_array：'+stack_array);
 	}
