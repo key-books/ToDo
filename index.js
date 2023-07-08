@@ -124,7 +124,7 @@ const save_array = (arr)=>{
 
 // 配列を作って、そこにタスク内容と優先度と日時を格納する。　ちゃんと入ってるか確認するために、一時的に出力する。
 function make_new_array(){
-	const name = document.getElementById('task_imput_name').value;
+	const name = document.getElementById('task_input_name').value;
 
 	const text = document.getElementById('task_input_text').value;
 
