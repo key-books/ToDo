@@ -50,6 +50,7 @@ const pickup_array = (witch) =>{
 	console.log(stack_array);
 	for (let i=1;i<stack_array.length;i=i+6){
 		if(array[i+1] == "高い"){
+		console.log('if == true');
 			doc_high=`
 				<div class="task_output_post[]">
 					<div class="task_output_post_high">
