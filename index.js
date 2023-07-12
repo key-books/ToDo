@@ -5,15 +5,15 @@ let stack_array = [];
 let strage = localStorage;
 
 // スタックの配列削除用 今はもういらない 記録用
-// const stack_delete = () =>{
-// 	console.log('デバック用：スタック全削除');
-// 	for(let i =0;i<stack_array.length;i++){
-// 		stack_array.shift();
-// 		console.log(stack_array);
-// 	}
-// 	save_array(stack_array);
-// 	console.log('デバック用：完成');
-// };
+const stack_delete = () =>{
+	console.log('デバック用：スタック全削除');
+	for(let i =0;i<stack_array.length;i++){
+		stack_array.shift();
+		console.log(stack_array);
+	}
+	save_array(stack_array);
+	console.log('デバック用：完成');
+};
 
 // dateの初期値を常に今日にする方法 https://tenshoku-miti.com/takepon/javascript-add-default-date/　（21/06/2023　にパクった）
 window.onload = function () {　//開いた瞬間にやるもの
@@ -298,7 +298,7 @@ const delete_task = ()=>{
 	for(let i =0; i<delete_task_array.length;i++){
 		if (delete_task_array[i].checked == true){
 			for(let i=0;i<6;i++){
-				stack_array.shift(i);
+				stack_array.splice(i,6);
 			}	
 		}
 		// console.log('デバック用：stack_array：'+stack_array);
